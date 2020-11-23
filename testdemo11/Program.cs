@@ -78,6 +78,11 @@ namespace testdemo11
     [My]
     public class Person
     {
+
+        public static Person  GetBy()
+        {
+            return null;
+        }
         internal void Eat()
         {
             throw new NotImplementedException();
@@ -578,14 +583,14 @@ namespace testdemo11
 
             ////如何获取特性？//
             ///
-            Student student3 = new Student();
-            Attribute attribute = OnlineAttribute.GetCustomAttribute(
-               typeof(Student),             //Student类上的
-               typeof(OnlineAttribute)      //OnlineAttribute特性
-             );
-            //将基类的Attribute对象强转为子类
-            Console.WriteLine("特性");
-            Console.WriteLine(((OnlineAttribute)attribute).Version);
+            //Student student3 = new Student();
+            //Attribute attribute = OnlineAttribute.GetCustomAttribute(
+            //   typeof(Student),             //Student类上的
+            //   typeof(OnlineAttribute)      //OnlineAttribute特性
+            // );
+            ////将基类的Attribute对象强转为子类
+            //Console.WriteLine("特性");
+            //Console.WriteLine(((OnlineAttribute)attribute).Version);
 
 
 

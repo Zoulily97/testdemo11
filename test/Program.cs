@@ -24,10 +24,6 @@ namespace test
             }
         }
 
-
-
-
-
         static void AICaculate(int a, int b, Action<int, int> opt)
         {
             Console.WriteLine("I'm AI caculator, let me try:");
@@ -50,6 +46,10 @@ namespace test
 
 
 
+            int a5 = int.MaxValue - 100;
+
+            int b5 = a5+int.MaxValue;
+            Console.WriteLine(a5+b5);
 
 
 
@@ -62,6 +62,27 @@ namespace test
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+            //Any()
+            IList<Student> students1 = new List<Student> {
+              new Student{Age=18},
+              new Student{Age=20},
+              new Student {Age=19},
+                new Student {Age=21}
+            };
+            students1.Any(s => s.Age > 20);
+            students1.MyAny(s => s.Age > 20);
 
             Teacher fg = new Teacher { Name = "大飞哥",Id=1 };
             Teacher fish = new Teacher { Name = "小鱼",Id=2 };
@@ -98,6 +119,65 @@ namespace test
             //{
             //    Console.WriteLine($"{item.Id}=={item.teachername}=={item.majorsname}");
             //}
+
+            
+
+            //grouop 分组
+
+            var result3 = majors .GroupBy(s => s.Teacher );
+           // IList<IGrouping<Teacher, Student>> studentslist = result3.ToList();
+            foreach (var item in result3)
+            {
+                Console.WriteLine($"{item.Key.Name}老师,{item.Count()}门课");
+            }
+
+
+
+            //select 
+
+
+
+
+
+
+
+            //ToDictionary
+            var results = from m in majors
+                          group m by m.Teacher into
+                          gm
+                          select new
+                          {
+                              teacher=gm.Key,
+                              majcount=gm.Count()
+                          };
+
+            foreach (var item in results)
+            {
+                Console.WriteLine(item.teacher.Name+item.majcount);
+
+            }
+            var listresult = results.ToDictionary(s => s.teacher, s => s.majcount);
+            foreach (var item in listresult)
+            {
+                Console.WriteLine(item.Key.Name + item.Value);
+            }
+
+
+
+
+
+
+
+            //排序：OrderBy
+            var result2 = students.OrderBy(s => s.Score)/*.Reverse()*/;
+            var result1 = students.OrderByDescending(s => s.Score);
+
+            var excellent = students.Where(s => s.Score > 90);
+            foreach (var item in excellent)
+            {
+                Console.WriteLine(item.Name);//"屿"  "蒋宜蒙"
+            }
+
             var result = from s in students
                          where s.Score > 60
                          select s;
@@ -106,11 +186,26 @@ namespace test
                 Console.WriteLine(item.Name);//"屿"  "蒋宜蒙"
                 Console.WriteLine("  where s.Score > 60");
             }
+
+            //IList<Student> iststudents = result.ToList();
+
+            //if (true)
+            //{//王
+            //    result = from r in result.ToList()
+            //             where r.Name.StartsWith("王")
+            //             select r;
+
+            //}
+
+
+
             if (true)
             {//王
-                result = from r in result.ToList()
-                         where r.Name.StartsWith("王")
-                         select r;
+                //where 方法
+             //result = from r in result/*.ToList()*/
+             //         where r.Name.StartsWith("王")
+             //         select r;
+                result = result.Where(r => r.Name.StartsWith("王"));//linq表达式
 
             }
             foreach (var item in result)
@@ -237,8 +332,6 @@ namespace test
 
 
 
-            //
-            //new List<int>().Any
 
 
 
@@ -255,21 +348,94 @@ namespace test
 
 
             //扩展
-            //Student zl = new Student();
-            //zl.Learn();
+            Student zl = new Student();
+            zl.Learn();
 
         }
 
 
 
 
+
+
+
+
+
+
+
+
+
+        //为了拿到bool值可以传一个func方法
+        public static void Prompt<T>(T a, T b, Func<T, T, bool> func)
+        {
+            if (func(a, b))
+            {
+
+            }
+        }
+
+        //两个泛型可以进行比较，泛型约束，接口使用
+        public static void Prompt<T>(T a, T b) where T : IComparable
+        {
+            if (a.CompareTo(b) > 0)
+            {
+
+            }
+        }
+
+        //设计一个接口
+        public static void Prompt<T>(T a, T b, IMyCompare<T> compare)
+        {
+            if (compare.Compare(a, b))
+            {
+
+            }
+        }
+
+        public interface IMyCompare<T>
+        {
+            bool Compare(T a, T b);
+        }
+
+
+
+
+
     }
 
+
+
+   public  static class myExtionMethid
+    {
+        //泛型的方法,方法名后声明为泛型 MyAny<T>
+
+        //// predicate才是正真传入的参数    predicate是个委托，委托是方法的引用，可以像方法一样使用   //Func<T,bool> predicate条件   
+        public static bool MyAny<T>(this IList<T > source,Func<T,bool> predicate)//this 定义的 是     // predicate才是正真传入的参数    predicate是个委托，委托是方法的引用，可以像方法一样使用   //Func<T,bool> predicate条件
+        {
+            foreach (var item in source)
+            {
+                if (predicate(item))// students1.MyAny(s => s.Age > 20);判断//MyAnyaa方法中，一个Lamda表达式（方法）作为一个参数传递给/MyAnyaa方法
+                {
+                    return true;
+                }
+
+            }
+            return false;
+        }
+    }
     // //像声明一个类一样声明一个委托
     //但定义了这个委托的返回void类型，接受两个int类型的参数
     public delegate void Caculate(int a, int b);
 
     public delegate void Opt(string a, int b);
     public delegate void Optt<T1, T2>(T1 a, T2 b);
+
+
+    
+
+
+
+
+
 
 }
